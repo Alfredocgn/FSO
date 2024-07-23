@@ -9,7 +9,7 @@ const App = () => {
   const [weather,setWeather] = useState(null)
   const [selectedCountry,setSelectedCountry] = useState(null)
 
-  // const weatherUrl =`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API}`
+
 
   const API_WEATHER = import.meta.env.VITE_API_WEATHER
 
@@ -57,7 +57,7 @@ useEffect(()=> {
       try{
         const country = allCountries.find(country =>country.name.common === selectedCountry)
         const capital = country.capital
-        const weatherData = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${capital}&appid=${API_WEATHER}`)
+        const weatherData = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${capital}&appid=${API_WEATHER}&units=metric`)
 
         setWeather(weatherData.data)
 
@@ -67,6 +67,7 @@ useEffect(()=> {
     }
     fetchWeather()
   }
+// eslint-disable-next-line react-hooks/exhaustive-deps
 },[selectedCountry,allCountries])
 
 useEffect(()=> {
