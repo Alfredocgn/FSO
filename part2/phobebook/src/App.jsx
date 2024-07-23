@@ -3,6 +3,7 @@ import { Filter } from './components/Filter'
 import { PersonForm } from './components/PersonForm'
 import { Persons } from './components/Persons'
 import {getPersons,addPerson, deletePerson, updatePerson} from './services/persons'
+import Notification from './components/Notification'
 
 
 
@@ -11,9 +12,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber,setNewNumber] = useState('')
   const [searchName,setSearchName] = useState('')
-
-
-
+  const [notification,setNotification] = useState({message:'',type:''})
 
 
 
@@ -26,6 +25,14 @@ const App = () => {
     fetchPersons()
   }, [])
 
+  useEffect(()=> {
+    if(notification.message){
+      const timer = setTimeout(()=> {
+        setNotification({message:'',type:''})
+      },5000)
+      return () => clearTimeout(timer)
+    }
+  },[notification])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -35,6 +42,7 @@ const App = () => {
         const updatedPerson = {...existingPerson,number:newNumber}
         await updatePerson(existingPerson.id,updatedPerson)
         setPersons(persons.map(person => person.id === existingPerson.id ? updatedPerson : person))
+        setNotification({mesage:`${newName}'s number updated`,type:'success'})
 
       }
       setNewName('')
@@ -46,8 +54,15 @@ const App = () => {
       number:newNumber,
       id:(persons.length + 1).toString(),
     }
-    const returnedPerson = await addPerson(newPerson)
-    setPersons(persons.concat(returnedPerson))
+    try{
+      const returnedPerson = await addPerson(newPerson)
+      setPersons(persons.concat(returnedPerson))
+      setNotification({message:`${newName} added to phonebook`,type:'success'})
+
+    }catch(error){
+      setNotification({message:`Failed to add ${newName}`, type:'error'})
+    }
+
 
 
     setNewName('')
@@ -71,24 +86,23 @@ const App = () => {
     setSearchName(e.target.value)
 
   }
-  const handleDelete = async(id) =>{
-    if(window.confirm('Do you really want to delete this person?')){
-      const response = await deletePerson(id)
-      if(response){
-        setPersons(persons.filter(person => person.id !== id))
-
-      }else{
-        console.log('Failed to delete person with id', id)
+  const handleDelete = async (id) => {
+    if (window.confirm('Do you really want to delete this person?')) {
+      try {
+        await deletePerson(id);
+        setPersons(persons.filter((person) => person.id !== id));
+        setNotification({ message: 'Person deleted', type: 'success' }); 
+      } catch (error) {
+        setNotification({ message: `Failed to delete person`, type: 'error' });
       }
-
     }
-
-  }
+  };
   const personsToShow = searchName ? persons.filter((person) => person.name.toLowerCase().includes(searchName.toLowerCase())) : persons;
 
   return (
     <div>
-      <h2>Phonebook</h2>s
+      <h2>Phonebook</h2>
+      <Notification message={notification.message} type={notification.type} />
       <Filter handleSearchChange={handleSearchChange} searchName={searchName}  />
       <h2>add a new</h2>
       <PersonForm handleNumberChange={handleNumberChange} handleNameChange={handleNameChange} handleSubmit={handleSubmit} newName={newName} newNumber={newNumber} />
