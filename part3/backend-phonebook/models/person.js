@@ -1,9 +1,24 @@
 const mongoose = require('mongoose')
 
-
+const phoneNumberValidator = (value) => {
+  const regex = /^\d{2,3}-\d+$/
+  return regex.test(value)
+}
 const personSchema = new mongoose.Schema({
-  name:String,
-  number:String,
+  name:{
+    type:String,
+    minLength:3,
+    required:true
+
+  },
+  number:{
+    type:String,
+    required:true,
+    validate:{
+      validator:phoneNumberValidator,
+      message: props => `${props.value} is not a valid phone number`
+    }
+  }
 })
 
 personSchema.set('toJSON',{

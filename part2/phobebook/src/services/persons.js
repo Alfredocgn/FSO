@@ -16,7 +16,7 @@ export const addPerson = async (newPerson) => {
     const request = await axios.post(baseUrl,newPerson)
     return request.data
   }catch(error){
-    console.log(error)
+    throw error.response.data
   }
 }
 
@@ -35,7 +35,7 @@ export const updatePerson = async (id,updatedPerson) => {
     const response = await axios.put(`${baseUrl}/${id}`,updatedPerson)
     return response.data
   }catch(error){
-    console.log(error)
+    throw error.response.data
   }
 }
 

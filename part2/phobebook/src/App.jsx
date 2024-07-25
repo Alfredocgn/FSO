@@ -46,7 +46,7 @@ const App = () => {
           setNotification({mesage:`${newName}'s number updated`,type:'success'})
 
         }catch(error){
-          setNotification({message:`Failed to update ${newName}`, type:'error'})
+          setNotification({message:error.error, type:'error'})
         }
 
       }
@@ -64,7 +64,7 @@ const App = () => {
       setNotification({message:`${newName} added to phonebook`,type:'success'})
 
     }catch(error){
-      setNotification({message:`Failed to add ${newName}`, type:'error'})
+      setNotification({message:error.error, type:'error'})
     }
 
 

@@ -3,7 +3,6 @@ const morgan = require('morgan')
 const cors = require('cors')
 const app = express()
 require('dotenv').config()
-const mongoose = require('mongoose')
 const Person = require('./models/person')
 const { connectToDatabase } = require('./mongo')
 
@@ -16,8 +15,8 @@ const { connectToDatabase } = require('./mongo')
 const errorHandler = (error,req,res,next) => {
   console.error(error.message)
 
-  if(error.nmae === 'CastError'){
-    return response.status(400).send({error:'malformatted id'})
+  if(error.name === 'CastError'){
+    return res.status(400).send({error:'malformatted id'})
   }
   next(error)
 }
