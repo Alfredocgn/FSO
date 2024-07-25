@@ -40,9 +40,14 @@ const App = () => {
     if(existingPerson){
       if (window.confirm(`${newName} is already added to phonebook. Do you want to update the number?`)){
         const updatedPerson = {...existingPerson,number:newNumber}
-        await updatePerson(existingPerson.id,updatedPerson)
-        setPersons(persons.map(person => person.id === existingPerson.id ? updatedPerson : person))
-        setNotification({mesage:`${newName}'s number updated`,type:'success'})
+        try{
+          const returnedPerson = await updatePerson(existingPerson.id,updatedPerson)
+          setPersons(persons.map(person => person.id === existingPerson.id ? returnedPerson : person))
+          setNotification({mesage:`${newName}'s number updated`,type:'success'})
+
+        }catch(error){
+          setNotification({message:`Failed to update ${newName}`, type:'error'})
+        }
 
       }
       setNewName('')
@@ -52,7 +57,6 @@ const App = () => {
     const newPerson = {
       name:newName,
       number:newNumber,
-      id:(persons.length + 1).toString(),
     }
     try{
       const returnedPerson = await addPerson(newPerson)
