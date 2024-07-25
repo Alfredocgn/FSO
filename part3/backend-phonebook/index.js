@@ -2,7 +2,7 @@ const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const app = express()
-const path = require('path')
+
 
 let persons = [
   { 
@@ -92,9 +92,6 @@ app.get('/info',(req,res) => {
 
   res.send(`<p>Phonebook has info for ${persons.length} people</p> </br> ${date}`)
 })
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
-});
 
 const unknownEndpoint = (req,res) =>{
   res.status(404).send({error:'unknown endpoint'})
