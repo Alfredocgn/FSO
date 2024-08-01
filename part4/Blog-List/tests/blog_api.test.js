@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blogModel')
-const helper = require('./testDb')
+const helper = require('./test_helper')
 const api = supertest(app)
 
 test('blog returned as json', async() => {
@@ -14,10 +14,10 @@ test('there are two blogs', async() => {
   const response = await api.get('/api/blogs')
   assert.strictEqual(response.body.length,2)
 })
-test('the first blog is about harms architecture', async() => {
+test('the first blog is about React patterns', async() => {
   const response = await api.get('/api/blogs')
   const contents = response.body.map(b => b.title)
-  assert.strictEqual(contents.includes('TDD harms architecture'),true)
+  assert.strictEqual(contents.includes('React patterns'),true)
 })
 test('the identifier prop of the blog is _id by default', async() => {
   const blogs = await Blog.find({})
