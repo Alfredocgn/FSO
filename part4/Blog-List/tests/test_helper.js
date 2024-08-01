@@ -21,13 +21,11 @@ const initialBlogs =[
   }  
 ]
 
-beforeEach(async ()=> {
-  await Blog.deleteMany({})
-  let blogObject = new Blog(initialBlogs[0])
-  await blogObject.save()
-  blogObject = new Blog(initialBlogs[1])
-  await blogObject.save()
-})
+
+const blogsInDb = async () => {
+  const blogs = await Blog.find({})
+  return blogs.map(b => b.toJSON())
+}
 
 
 const usersInDb = async () => {
@@ -37,5 +35,6 @@ const usersInDb = async () => {
 
 module.exports = {
   initialBlogs,
-  usersInDb
+  usersInDb,
+  blogsInDb
 }

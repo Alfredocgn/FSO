@@ -35,7 +35,7 @@ describe('when there is initially one user in db', () => {
     assert(usernames.includes(newUser.username))
   })
 
-  test('creation fails with proper statuscode and message ig username already taken', async() => {
+  test('creation fails with proper statuscode and message if username already taken', async() => {
     const usersAtStart = await helper.usersInDb()
 
     const newUser = {
@@ -47,8 +47,40 @@ describe('when there is initially one user in db', () => {
     const result = await api.post('/api/users').send(newUser).expect(400).expect('Content-Type', /application\/json/)
 
     const usersAtEnd = await helper.usersInDb()
-    assert(result.body.error.includes('expected username to be unique'))
+    assert(result.body.error.includes('E11000 duplicate key error collection'))
 
+    assert.strictEqual(usersAtEnd.length,usersAtStart.length)
+  })
+
+  test('creation fails with proper statuscode and message if username too short', async() => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username:'al',
+      name:'Short User',
+      password: 'password'
+    }
+
+    const result = await api.post('/api/users').send(newUser).expect(400).expect('Content-Type', /application\/json/)
+    assert(result.body.error.includes('is shorter than the minimum allowed length (3)'))
+
+    const usersAtEnd = await helper.usersInDb()
+    assert.strictEqual(usersAtEnd.length,usersAtStart.length)
+  })
+
+  test('cretion fails with proper statuscode and message if password is too short',async() => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username:'Spiderman',
+      name:'Peter Parker',
+      password : 'mj'
+    }
+
+    const result = await api.post('/api/users').send(newUser).expect(400).expect('Content-Type', /application\/json/)
+    assert(result.body.error.includes('password is shorter than the minimum allowed length (3)'))
+
+    const usersAtEnd = await helper.usersInDb()
     assert.strictEqual(usersAtEnd.length,usersAtStart.length)
   })
 
