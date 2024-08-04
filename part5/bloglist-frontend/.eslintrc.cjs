@@ -1,6 +1,9 @@
 module.exports = {
   root: true,
-  env: { browser: true, es2020: true },
+  env: {
+    browser: true,
+    es2020: true,
+  },
   extends: [
     'eslint:recommended',
     'plugin:react/recommended',
@@ -12,10 +15,22 @@ module.exports = {
   settings: { react: { version: '18.2' } },
   plugins: ['react-refresh'],
   rules: {
-    'react-refresh/only-export-components': [
-      'warn',
-      { allowConstantExport: true },
+    "indent": 'off',
+    "linebreak-style": 'off',
+    "quotes": [
+        "error",
+        "single"
     ],
-    'react/prop-types': false
+    "semi": 'off',
+    "eqeqeq": "error",
+    "no-trailing-spaces": "off",
+    "object-curly-spacing": 'off',
+    "arrow-spacing": [
+        "error", { "before": true, "after": true }
+    ],
+    "no-console": 0,
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": 0,
+    "no-unused-vars": 0    
   },
 }

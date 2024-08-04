@@ -1,5 +1,5 @@
 import React from 'react'
-
+import PropTypes from 'prop-types'
 
 const error = {
   color: 'red',
@@ -36,3 +36,8 @@ const Notification = ({ message, type }) => {
 }
 
 export default Notification
+
+Notification.propTypes ={
+  message: PropTypes.string.isRequired,
+  type:PropTypes.string.isRequired
+}

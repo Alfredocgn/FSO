@@ -1,21 +1,47 @@
+import { useState } from 'react'
+import PropTypes from 'prop-types'
 
 
 
+export const NewBlog = ({createBlog}) => {
+  const [newTitle,setNewTitle] = useState('')
+  const [newAuthor,setNewAuthor] = useState('')
+  const [newUrl,setNewUrl] = useState('')
 
-export const NewBlog = (props) => {
+  const handleTitleChange = (e) => {
+    setNewTitle(e.target.value)
+  }
+  const handleAuthorChange = (e) => {
+    setNewAuthor(e.target.value)
+  }
+  const handleUrlChange = (e) => {
+    setNewUrl(e.target.value)
+  }
+
+  const addBlog = (e) => {
+    e.preventDefault()
+    createBlog({
+      title: newTitle,
+      author: newAuthor,
+      url: newUrl
+    })
+    setNewTitle('')
+    setNewAuthor('')
+    setNewUrl('')
+  }
   return (
-    <form onSubmit={props.handleCreate}>
+    <form onSubmit={addBlog}>
       <div>
         Title:
-        <input value={props.title} placeholder='Title' onChange={({target}) => props.setTitle(target.value)} type='text'/>
+        <input value={newTitle} placeholder='Title' onChange={handleTitleChange} type='text'/>
       </div>
       <div>
         Author:
-        <input value={props.author} placeholder='Author' onChange={({target}) => props.setAuthor(target.value)} type='text'/>
+        <input value={newAuthor} placeholder='Author' onChange={handleAuthorChange} type='text'/>
       </div>
       <div>
         Url:
-        <input value={props.url} placeholder='Url' onChange={({target}) => props.setUrl(target.value)} type='text'/>
+        <input value={newUrl} placeholder='Url' onChange={handleUrlChange} type='text'/>
       </div>
       <button type='submit'>Create</button>
     </form>
@@ -23,3 +49,7 @@ export const NewBlog = (props) => {
 }
 
 export default NewBlog
+
+NewBlog.propTypes ={
+  createBlog: PropTypes.object.isRequired
+}
