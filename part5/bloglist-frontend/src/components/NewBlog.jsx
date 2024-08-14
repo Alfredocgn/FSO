@@ -33,15 +33,15 @@ export const NewBlog = ({createBlog}) => {
     <form onSubmit={addBlog}>
       <div>
         Title:
-        <input value={newTitle} placeholder='Title' onChange={handleTitleChange} type='text'/>
+        <input value={newTitle} placeholder='title' onChange={handleTitleChange} type='text'/>
       </div>
       <div>
         Author:
-        <input value={newAuthor} placeholder='Author' onChange={handleAuthorChange} type='text'/>
+        <input value={newAuthor} placeholder='author' onChange={handleAuthorChange} type='text'/>
       </div>
       <div>
         Url:
-        <input value={newUrl} placeholder='Url' onChange={handleUrlChange} type='text'/>
+        <input value={newUrl} placeholder='url' onChange={handleUrlChange} type='text'/>
       </div>
       <button type='submit'>Create</button>
     </form>
@@ -51,5 +51,5 @@ export const NewBlog = ({createBlog}) => {
 export default NewBlog
 
 NewBlog.propTypes ={
-  createBlog: PropTypes.object.isRequired
+  createBlog: PropTypes.func.isRequired
 }
