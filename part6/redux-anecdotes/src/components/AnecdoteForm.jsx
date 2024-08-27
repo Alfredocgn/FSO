@@ -1,19 +1,21 @@
 /* eslint-disable react/prop-types */
 
 import { useDispatch } from "react-redux"
-import { addAnecdote } from "../reducers/anecdoteReducer"
+import {  createAnecdote } from "../reducers/anecdoteReducer"
 import { showNotification } from "../reducers/notificationReducer"
+
+
 
 
 // eslint-disable-next-line react/prop-types
 const AnecdoteForm = () => {
   const dispatch = useDispatch()
 
-  const handleAddAnecdote = (e) => {
+  const handleAddAnecdote = async (e) => {
     e.preventDefault()
     const content = e.target.anecdote.value
     e.target.anecdote.value = ''
-    dispatch(addAnecdote(content))
+    dispatch(createAnecdote(content))
     dispatch(showNotification(`you created '${content}'`,5))
   }
   return (
