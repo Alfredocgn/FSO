@@ -1,36 +1,33 @@
-
-
 const intialState = {
-  message:null,
-  type:null
-}
+  message: null,
+  type: null,
+};
 
-export const setNotification = (message,notificationType) => {
-  return{
-    type:'SET_NOTIFICATION',
-    payload:{message,type:notificationType}
-  }
-}
+export const setNotification = (message, notificationType) => {
+  return {
+    type: 'SET_NOTIFICATION',
+    payload: { message, type: notificationType },
+  };
+};
 
 export const clearNotification = () => {
   return {
-    type:'CLEAR_NOTIFICATION'
-  }
-}
+    type: 'CLEAR_NOTIFICATION',
+  };
+};
 
-
-const notificationReducer = (state=intialState,action) => {
-  switch(action.type){
+const notificationReducer = (state = intialState, action) => {
+  switch (action.type) {
     case 'SET_NOTIFICATION':
       return {
-        message:action.payload.message,
-        type:action.payload.type
-      }
+        message: action.payload.message,
+        type: action.payload.type,
+      };
     case 'CLEAR_NOTIFICATION':
-      return intialState
+      return intialState;
     default:
-      return state
+      return state;
   }
-}
+};
 
-export default notificationReducer
+export default notificationReducer;
