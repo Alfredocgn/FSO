@@ -11,27 +11,29 @@ import {
   clearNotification,
   setNotification,
 } from './reducers/notificationReducer';
+import { initBlogs,updateBlog,createBlog,deleteBlog } from './reducers/blogReducer';
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
+/*   const [blogs, setBlogs] = useState([]); */
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
+/*   const [errorMessage, setErrorMessage] = useState(null); */
   const blogFormRef = useRef();
   const notification = useSelector((state) => state.notification);
   const dispatch = useDispatch();
-
+  const blogs = useSelector((state) => state.blogs)
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser');
+    console.log(loggedUserJSON)
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
       blogService.setToken(user.token);
-      getAllBlogs();
+      dispatch(initBlogs())
     }
-  }, []);
-
+  }, [dispatch]);
+/* 
   const getAllBlogs = async () => {
     try {
       const blogs = await blogService.getAll();
@@ -40,7 +42,7 @@ const App = () => {
       console.error('Failed to fetch blogs:', error);
     }
   };
-
+ */
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -67,28 +69,31 @@ const App = () => {
     setUser(null);
   };
 
-  const createBlog = async (BlogToAdd) => {
+  const create = async (BlogToAdd) => {
     blogFormRef.current.toggleVisibility();
 
     try {
-      const createdBlog = await blogService.create(BlogToAdd);
-      setErrorMessage({
+      /* const createdBlog = await blogService.create(BlogToAdd); */
+      dispatch(createBlog(BlogToAdd))
+      dispatch(setNotification(`Blog ${BlogToAdd.title} was successfully added`, 'success'))
+/*       setErrorMessage({
         message: `Blog ${BlogToAdd.title} was successfully added`,
         type: 'success',
-      });
-      setBlogs(blogs.concat(createdBlog));
+      }); */
+/*       setBlogs(blogs.concat(createdBlog)); */
       setTimeout(() => {
-        setErrorMessage(null);
+        dispatch(clearNotification());
       }, 5000);
     } catch (error) {
-      setErrorMessage({ message: 'Failed to create blog', type: 'error' });
+      dispatch(setNotification('Failed to create blog', 'error'))
+      /* setErrorMessage({ message: 'Failed to create blog', type: 'error' }); */
       setTimeout(() => {
-        setErrorMessage(null);
+        dispatch(clearNotification());
       }, 5000);
     }
   };
 
-  const updateBlog = async (BlogToUpdate) => {
+/*   const updateBlog = async (BlogToUpdate) => {
     try {
       const updatedBlog = await blogService.update(BlogToUpdate);
       console.log(updateBlog);
@@ -111,9 +116,39 @@ const App = () => {
         setErrorMessage(null);
       }, 5000);
     }
-  };
+  }; */
 
-  const deleteBlog = async (BlogToDelete) => {
+  const update = (blog) => {
+    try{
+      dispatch(updateBlog(blog))
+      dispatch(setNotification(`Blog ${blog.title} was successfully updated`, 'success'))
+      setTimeout(() => {
+        dispatch(clearNotification())
+      },5000)
+    }catch(error){
+      dispatch(setNotification(`Cannot update blog ${blog.title}`, 'error'))
+      setTimeout(() => {
+        dispatch(clearNotification())
+      },5000)
+    }
+  }
+
+  const remove = (id) => {
+    try{
+      dispatch(deleteBlog(id))
+      dispatch(setNotification('Blog was succesfully deleted','success'))
+      setTimeout(() => {
+        dispatch(clearNotification())
+      },5000)
+    }catch(error){
+      dispatch(setNotification('Cannot delete blog','error'))
+      setTimeout(() => {
+        dispatch(clearNotification())
+      },5000)
+    }
+  }
+
+/*   const deleteBlog = async (BlogToDelete) => {
     try {
       if (window.confirm(`Delete ${BlogToDelete.title}?`)) {
         blogService.remove(BlogToDelete.id);
@@ -132,18 +167,15 @@ const App = () => {
         type: 'error',
       });
     }
-  };
+  }; */
 
   const byLikes = (b1, b2) => b2.likes - b1.likes;
   return (
     <div>
       <h1>Blog</h1>
-      {errorMessage === null ? null : (
-        <Notification
-          message={errorMessage?.message}
-          type={errorMessage?.type}
-        />
-      )}
+      {notification && (
+  <Notification message={notification.message} type={notification.type} />
+)}
       {user === null ? (
         <Login
           username={username}
@@ -157,15 +189,13 @@ const App = () => {
           <h3>{user.username} logged in</h3>
           <button onClick={handleLogout}>Logout</button>
           <Togglable buttonLabel="New Blog" ref={blogFormRef}>
-            <NewBlog createBlog={createBlog} />
+            <NewBlog createBlog={create} />
           </Togglable>
           <h2>Blogs</h2>
           {blogs?.sort(byLikes).map((blog) => (
             <Blog
               key={blog.id}
               blog={blog}
-              updateBlog={updateBlog}
-              deleteBlog={deleteBlog}
             />
           ))}
         </div>
